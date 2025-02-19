@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from .utils import draw_networkx_curved_edge_labels
 from typing import List, Tuple
 from collections import defaultdict
 from functools import partial
@@ -239,8 +240,8 @@ def plot_graph(
         curved_edge_labels = {edge: get_weight(edge) for edge in edges}
 
         # draw edge labels
-        nx.draw_networkx_edge_labels(
-            G, pos, ax=ax, edge_labels=curved_edge_labels, rotate=True
+        draw_networkx_curved_edge_labels(
+            G, pos, ax=ax, edge_labels=curved_edge_labels, rotate=True, rad=rad
         )
 
     # draw curved edges based on the number of times they occur
