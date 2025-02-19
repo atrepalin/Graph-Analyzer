@@ -5,7 +5,7 @@ from typing import List, Tuple
 from collections import defaultdict
 from functools import partial
 from enum import Enum
-from .cycles import find_cycles, is_in_cycle, get_cycles_count
+from ..cycles import find_cycles, is_in_cycle, get_cycles_count
 
 
 def adjacency_matrix_to_edge_list(
