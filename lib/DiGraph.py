@@ -2,7 +2,7 @@ from .cycles import find_cycles, convert_to_acyclic
 from .graphics.visualize import plot as plot_graph, Layout
 from .matrices import adjacency_to_incidence, incidence_to_adjacency
 from .topo import is_topo_sorted, topo_sort
-from .methods.dp import shortest_paths_dp
+from .methods import shortest_paths_dp, dijkstra
 from typing import List, Tuple
 
 
@@ -44,6 +44,11 @@ class DiGraph:
         if not self.is_topologically_sorted:
             raise Exception("Graph is not topologically sorted")
         return shortest_paths_dp(self.adj_matrix, source)
+
+    def shortest_path_dijkstra(
+        self, source: int
+    ) -> Tuple[List[float], List[List[int]]]:
+        return dijkstra(self.adj_matrix, source)
 
     def print(self):
         print("=============== DiGraph ==============")
