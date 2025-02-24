@@ -30,11 +30,8 @@ def adjacency_to_incidence(adj_matrix: List[List[int]]) -> List[List[int]]:
     incidence_matrix = [[0] * m for _ in range(n)]
 
     for k, (i, j, w) in enumerate(edges):
-        if i == j:
-            incidence_matrix[i][k] = w
-        else:
-            incidence_matrix[i][k] = w
-            incidence_matrix[j][k] = -w
+        incidence_matrix[j][k] = -w
+        incidence_matrix[i][k] = w
 
     return incidence_matrix
 
