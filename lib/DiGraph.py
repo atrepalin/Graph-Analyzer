@@ -63,7 +63,7 @@ class DiGraph:
         if len(self.cycles) == 0:
             return self
 
-        return DiGraph(convert_to_acyclic(self.adj_matrix))
+        return DiGraph(convert_to_acyclic(self.adj_matrix, self.cycles))
 
     def topological_sort(self) -> "DiGraph":
         """

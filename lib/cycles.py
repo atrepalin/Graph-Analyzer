@@ -175,42 +175,44 @@ def remove_min_edges_to_acyclic(
 
     def find_cycles():
         """
-        Finds all cycles in a graph represented by a dictionary where the keys are node indices
-        and the values are sets of nodes that are neighbors of the key node.
+        Finds if there are any cycles in the graph using a depth first search.
 
         Parameters
         ----------
-        graph : Dict[int, Set[int]]
-            The graph represented as a dictionary of node indices and sets of neighbors.
+        graph : dict
+            A dictionary representing the graph, where the keys are the vertices and the values are
+            sets of their neighbors.
 
         Returns
         -------
-        List[List[int]]
-            A list of cycles, where each cycle is a list of node indices.
+        bool
+            True if a cycle was found, False otherwise.
         """
-        cycles_found = []
+        cycles_found = False
         path = []
         visited = set()
 
         def dfs(node):
             """
-            Performs a depth-first search of the graph starting at the given node.
-
-            This function is used to find all cycles in the graph.
+            A helper function to perform a depth-first search (DFS) for finding cycles
+            in a graph.
 
             Parameters
             ----------
             node : int
-                The node to start the search at.
+                The current node being visited.
 
             Returns
             -------
             None
-                The function does not return anything, it just finds all cycles in the graph.
             """
+            nonlocal cycles_found
+
+            if cycles_found:
+                return
+
             if node in path:
-                cycle_start = path.index(node)
-                cycles_found.append(path[cycle_start:] + [node])
+                cycles_found = True
                 return
             if node in visited:
                 return
@@ -223,6 +225,7 @@ def remove_min_edges_to_acyclic(
 
         for v in graph:
             dfs(v)
+            
         return cycles_found
 
     removed_edges = set()
@@ -261,25 +264,22 @@ def remove_edges_from_matrix(
     return adj_matrix
 
 
-def convert_to_acyclic(adj_matrix: List[List[int]]) -> List[List[int]]:
+def convert_to_acyclic(adj_matrix: List[List[int]], cycles: List[List[int]]) -> List[List[int]]:
     """
-    Converts a graph represented by an adjacency matrix to an acyclic graph.
-
-    The function first finds all cycles in the graph. It then removes the minimum
-    number of edges to break all cycles and converts the graph to an acyclic graph.
+    Converts a graph represented by an adjacency matrix to an acyclic graph by removing the minimum number of edges.
 
     Parameters
     ----------
     adj_matrix : List[List[int]]
         The adjacency matrix of the graph.
+    cycles : List[List[int]]
+        The cycles in the graph. If provided, an edge will be repeated as many times as it appears in a cycle.
 
     Returns
     -------
     List[List[int]]
-        The adjacency matrix of the acyclic graph.
+        The acyclic graph represented by the adjacency matrix.
     """
-
-    cycles = find_cycles(adj_matrix)
     removed_edges = remove_min_edges_to_acyclic(adj_matrix, cycles)
     adj_matrix = remove_edges_from_matrix(adj_matrix, removed_edges)
     return adj_matrix
