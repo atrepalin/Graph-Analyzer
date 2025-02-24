@@ -225,7 +225,7 @@ def remove_min_edges_to_acyclic(
 
         for v in graph:
             dfs(v)
-            
+
         return cycles_found
 
     removed_edges = set()
@@ -264,7 +264,9 @@ def remove_edges_from_matrix(
     return adj_matrix
 
 
-def convert_to_acyclic(adj_matrix: List[List[int]], cycles: List[List[int]]) -> List[List[int]]:
+def convert_to_acyclic(
+    adj_matrix: List[List[int]], cycles: List[List[int]]
+) -> List[List[int]]:
     """
     Converts a graph represented by an adjacency matrix to an acyclic graph by removing the minimum number of edges.
 
