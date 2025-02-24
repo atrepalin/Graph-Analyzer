@@ -1,6 +1,7 @@
 from typing import List
 from collections import deque
 
+
 def is_topo_sorted(adj_matrix: List[List[int]]) -> bool:
     """Checks if the given adjacency matrix is topologically sorted.
 
@@ -27,8 +28,9 @@ def is_topo_sorted(adj_matrix: List[List[int]]) -> bool:
         for j in range(i):
             if adj_matrix[i][j] != 0:
                 return False
-            
+
     return True
+
 
 def topo_sort_order(adj_matrix: List[List[int]]) -> List[int]:
     """
@@ -54,7 +56,7 @@ def topo_sort_order(adj_matrix: List[List[int]]) -> List[int]:
 
     n = len(adj_matrix)
     in_degree = [0] * n
-    
+
     for u in range(n):
         for v in range(n):
             if adj_matrix[u][v] != 0:
@@ -74,7 +76,10 @@ def topo_sort_order(adj_matrix: List[List[int]]) -> List[int]:
 
     return topo_order if len(topo_order) == n else None
 
-def rearrange_adj_matrix(adj_matrix: List[List[int]], topo_order: List[int]) -> List[List[int]]:
+
+def rearrange_adj_matrix(
+    adj_matrix: List[List[int]], topo_order: List[int]
+) -> List[List[int]]:
     """
     Rearranges the given adjacency matrix according to the given topological order.
 
@@ -90,7 +95,7 @@ def rearrange_adj_matrix(adj_matrix: List[List[int]], topo_order: List[int]) -> 
     List[List[int]]
         The rearranged adjacency matrix.
     """
-    
+
     n = len(adj_matrix)
     sorted_matrix = [[0] * n for _ in range(n)]
 
@@ -101,6 +106,7 @@ def rearrange_adj_matrix(adj_matrix: List[List[int]], topo_order: List[int]) -> 
             sorted_matrix[index_map[i]][index_map[j]] = adj_matrix[i][j]
 
     return sorted_matrix
+
 
 def topo_sort(adj_matrix: List[List[int]]) -> List[List[int]]:
     """
