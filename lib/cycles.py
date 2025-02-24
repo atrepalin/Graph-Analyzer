@@ -1,5 +1,5 @@
 from typing import List, Set
-
+from copy import deepcopy
 
 def shift(arr: List[int], n: int) -> List[int]:
     """
@@ -138,3 +138,59 @@ def get_cycles_count(S: int, F: int, cycles: List[List[int]]) -> int:
                 count += 1
 
     return count
+
+def remove_min_edges_to_acyclic(adj_matrix, cycles):
+    from collections import defaultdict
+
+    edge_counts = defaultdict(int)
+    
+    for cycle in cycles:
+        for i in range(len(cycle) - 1):
+            edge = (cycle[i], cycle[i + 1])
+            edge_counts[edge] += 1
+    
+    graph = {i: set() for i in range(len(adj_matrix))}
+    for i in range(len(adj_matrix)):
+        for j in range(len(adj_matrix)):
+            if adj_matrix[i][j]:
+                graph[i].add(j)
+    
+    def find_cycles():
+        cycles_found = []
+        path = []
+        visited = set()
+
+        def dfs(node):
+            if node in path:
+                cycle_start = path.index(node)
+                cycles_found.append(path[cycle_start:] + [node])
+                return
+            if node in visited:
+                return
+            
+            path.append(node)
+            visited.add(node)
+            for neighbor in graph[node]:
+                dfs(neighbor)
+            path.pop()
+        
+        for v in graph:
+            dfs(v)
+        return cycles_found
+    
+    removed_edges = set()
+    while find_cycles():
+        edge_to_remove = max(edge_counts, key=edge_counts.get)
+        removed_edges.add(edge_to_remove)
+        graph[edge_to_remove[0]].remove(edge_to_remove[1])
+        del edge_counts[edge_to_remove]
+    
+    return removed_edges
+
+def remove_edges_from_matrix(adj_matrix, removed_edges):
+    adj_matrix = deepcopy(adj_matrix)
+
+    for v, u in removed_edges:
+        adj_matrix[v][u] = 0
+
+    return adj_matrix
