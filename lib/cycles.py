@@ -1,5 +1,7 @@
-from typing import List, Set
+from typing import List, Set, Tuple
 from copy import deepcopy
+from collections import defaultdict
+
 
 def shift(arr: List[int], n: int) -> List[int]:
     """
@@ -139,58 +141,145 @@ def get_cycles_count(S: int, F: int, cycles: List[List[int]]) -> int:
 
     return count
 
-def remove_min_edges_to_acyclic(adj_matrix, cycles):
-    from collections import defaultdict
 
+def remove_min_edges_to_acyclic(
+    adj_matrix: List[List[int]], cycles: List[List[int]] = []
+) -> Set[Tuple[int, int]]:
+    """
+    Removes the minimum number of edges from the graph represented by the given adjacency matrix to make it acyclic.
+
+    Parameters
+    ----------
+    adj_matrix : List[List[int]]
+        The adjacency matrix of the graph.
+    cycles : List[List[int]]
+        The list of cycles in the graph.
+
+    Returns
+    -------
+    Set[Tuple[int, int]]
+        A set of edges that were removed from the graph.
+    """
     edge_counts = defaultdict(int)
-    
+
     for cycle in cycles:
         for i in range(len(cycle) - 1):
             edge = (cycle[i], cycle[i + 1])
             edge_counts[edge] += 1
-    
+
     graph = {i: set() for i in range(len(adj_matrix))}
     for i in range(len(adj_matrix)):
         for j in range(len(adj_matrix)):
             if adj_matrix[i][j]:
                 graph[i].add(j)
-    
+
     def find_cycles():
+        """
+        Finds all cycles in a graph represented by a dictionary where the keys are node indices
+        and the values are sets of nodes that are neighbors of the key node.
+
+        Parameters
+        ----------
+        graph : Dict[int, Set[int]]
+            The graph represented as a dictionary of node indices and sets of neighbors.
+
+        Returns
+        -------
+        List[List[int]]
+            A list of cycles, where each cycle is a list of node indices.
+        """
         cycles_found = []
         path = []
         visited = set()
 
         def dfs(node):
+            """
+            Performs a depth-first search of the graph starting at the given node.
+
+            This function is used to find all cycles in the graph.
+
+            Parameters
+            ----------
+            node : int
+                The node to start the search at.
+
+            Returns
+            -------
+            None
+                The function does not return anything, it just finds all cycles in the graph.
+            """
             if node in path:
                 cycle_start = path.index(node)
                 cycles_found.append(path[cycle_start:] + [node])
                 return
             if node in visited:
                 return
-            
+
             path.append(node)
             visited.add(node)
             for neighbor in graph[node]:
                 dfs(neighbor)
             path.pop()
-        
+
         for v in graph:
             dfs(v)
         return cycles_found
-    
+
     removed_edges = set()
     while find_cycles():
         edge_to_remove = max(edge_counts, key=edge_counts.get)
         removed_edges.add(edge_to_remove)
         graph[edge_to_remove[0]].remove(edge_to_remove[1])
         del edge_counts[edge_to_remove]
-    
+
     return removed_edges
 
-def remove_edges_from_matrix(adj_matrix, removed_edges):
+
+def remove_edges_from_matrix(
+    adj_matrix: List[List[int]], removed_edges: Set[Tuple[int, int]]
+) -> List[List[int]]:
+    """
+    Removes edges from an adjacency matrix.
+
+    Parameters
+    ----------
+    adj_matrix : List[List[int]]
+        The adjacency matrix of the graph.
+    removed_edges : Set[Tuple[int, int]]
+        The edges to be removed from the graph.
+
+    Returns
+    -------
+    List[List[int]]
+        The updated adjacency matrix with the removed edges.
+    """
     adj_matrix = deepcopy(adj_matrix)
 
     for v, u in removed_edges:
         adj_matrix[v][u] = 0
 
+    return adj_matrix
+
+
+def convert_to_acyclic(adj_matrix: List[List[int]]) -> List[List[int]]:
+    """
+    Converts a graph represented by an adjacency matrix to an acyclic graph.
+
+    The function first finds all cycles in the graph. It then removes the minimum
+    number of edges to break all cycles and converts the graph to an acyclic graph.
+
+    Parameters
+    ----------
+    adj_matrix : List[List[int]]
+        The adjacency matrix of the graph.
+
+    Returns
+    -------
+    List[List[int]]
+        The adjacency matrix of the acyclic graph.
+    """
+
+    cycles = find_cycles(adj_matrix)
+    removed_edges = remove_min_edges_to_acyclic(adj_matrix, cycles)
+    adj_matrix = remove_edges_from_matrix(adj_matrix, removed_edges)
     return adj_matrix
