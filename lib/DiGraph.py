@@ -2,7 +2,7 @@ from .cycles import find_cycles, convert_to_acyclic
 from .graphics.visualize import plot as plot_graph, Layout
 from .matrices import adjacency_to_incidence, incidence_to_adjacency
 from .topo import is_topo_sorted, topo_sort
-from .methods import shortest_paths_dp, dijkstra
+from .methods import shortest_paths_dp, dijkstra, floyd_warshall
 from typing import List, Tuple
 
 
@@ -136,6 +136,22 @@ class DiGraph:
             paths from the source node to all other nodes.
         """
         return dijkstra(self.adj_matrix, source)
+
+    def shortest_path_floyd_warshall(self) -> Tuple[List[float], List[List[int]]]:
+        """
+        Computes the shortest paths from every node to every other node in a weighted graph.
+
+        This function uses the Floyd-Warshall algorithm to calculate the shortest paths from
+        every node to every other node in the graph. The graph must be a simple weighted graph.
+
+        Returns
+        -------
+        Tuple[List[float], List[List[int]]]
+            A tuple of two lists, the first of which contains the shortest distances from
+            every node to every other node, and the second of which contains the shortest
+            paths from every node to every other node.
+        """
+        return floyd_warshall(self.adj_matrix)
 
     def print(self):
         """
