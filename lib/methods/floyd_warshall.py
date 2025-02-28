@@ -49,4 +49,8 @@ def floyd_warshall(
                         dp[i][j] = new_dist
                         paths[i][j] = paths[i][k] + paths[k][j][1:]
 
+    for i in range(n):
+        if dp[i][i] < 0:
+            return None, None
+
     return dp, paths
